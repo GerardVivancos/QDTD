@@ -23,6 +23,8 @@ public class SnapCubeToGrid : MonoBehaviour {
 
     private void updateLabel() {
         TextMesh label = GetComponentInChildren<TextMesh>();
-        label.text = gameObject.transform.position.x / gridSize + ","+ gameObject.transform.position.z / gridSize;
+        string objectPositionLabel = gameObject.transform.position.x / gridSize + "," + gameObject.transform.position.z / gridSize;
+        label.text = objectPositionLabel;
+        gameObject.name = objectPositionLabel;
     }
 }
