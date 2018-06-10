@@ -9,6 +9,8 @@ public class SnapCubeToGrid : MonoBehaviour {
     [Range(1,100)]
     public float gridSize = 10f;
 
+    
+
 	void Start () {
         
 	}
@@ -21,5 +23,11 @@ public class SnapCubeToGrid : MonoBehaviour {
         p.z = Mathf.RoundToInt(p.z / gridSize) * gridSize;
 
         gameObject.transform.position = p;
+        updateLabel();
+    }
+
+    private void updateLabel() {
+        TextMesh label = GetComponentInChildren<TextMesh>();
+        label.text = (gameObject.transform.position.x / gridSize).ToString() + ","+ (gameObject.transform.position.z / gridSize).ToString();
     }
 }
