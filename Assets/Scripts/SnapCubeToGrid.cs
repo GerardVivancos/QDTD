@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
+[SelectionBase]
 public class SnapCubeToGrid : MonoBehaviour {
 
     [SerializeField]
     [Range(1,100)]
     public float gridSize = 10f;
-
-    
-
-	void Start () {
-        
-	}
 	
 	void Update () {
         Vector3 p = gameObject.transform.position;
