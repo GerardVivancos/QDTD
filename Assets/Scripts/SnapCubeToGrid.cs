@@ -3,28 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-[SelectionBase]
 public class SnapCubeToGrid : MonoBehaviour {
 
-    [SerializeField]
-    [Range(1,100)]
-    public float gridSize = 10f;
-	
-	void Update () {
-        Vector3 p = gameObject.transform.position;
+    GridCell cell;
 
-        p.x = Mathf.RoundToInt(p.x / gridSize) * gridSize;
-        p.y = Mathf.RoundToInt(p.y / gridSize) * gridSize;
-        p.z = Mathf.RoundToInt(p.z / gridSize) * gridSize;
-
-        gameObject.transform.position = p;
-        updateLabel();
+    private void Awake() {
+        cell = GetComponent<GridCell>();
     }
 
-    private void updateLabel() {
+    void Update () {
+        SnapToGrid();
+        UpdateLabel();
+    }
+
+    private void SnapToGrid() {
+        int gridSize = cell.GetGridSize();
+        Vector3 p = transform.position;
+        Vector2Int cellPosition = cell.GetGridPosition();
+
+        p.x = cellPosition.x * gridSize;
+        p.y = 0f;
+        p.z = cellPosition.y * gridSize;
+
+        transform.position = p;
+    }
+
+    private void UpdateLabel() {
+        Vector2Int cellPosition = cell.GetGridPosition();
         TextMesh label = GetComponentInChildren<TextMesh>();
-        string objectPositionLabel = gameObject.transform.position.x / gridSize + "," + gameObject.transform.position.z / gridSize;
+        string objectPositionLabel = cellPosition.x + "," + cellPosition.y;
         label.text = objectPositionLabel;
-        gameObject.name = objectPositionLabel;
+
     }
 }
