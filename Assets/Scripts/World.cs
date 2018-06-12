@@ -51,6 +51,7 @@ public class World : MonoBehaviour {
 
     private void FindPath(Vector2Int startPosition, Vector2Int endPosition) {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        List<Vector2Int> alreadyVisitedPositions = new List<Vector2Int>();
 
         if (! (grid.ContainsKey(startPosition) && grid.ContainsKey(endPosition))) {
             print("Unexistant start or end position");
@@ -63,15 +64,18 @@ public class World : MonoBehaviour {
         }
 
         queue.Enqueue(startPosition);
-
         while (queue.Count > 0) {
             Vector2Int searchPosition = queue.Dequeue();
+            alreadyVisitedPositions.Add(searchPosition);
             foreach (Vector2Int neighbourPosition in ExploreNeighbours(searchPosition)) {
                 if (neighbourPosition == endPosition) {
-                    print("found " + endPosition);
+                    print("found end: " + endPosition + " from " + searchPosition);
                     return;
-                } else {
+                } else if (!alreadyVisitedPositions.Contains(neighbourPosition) && !queue.Contains(neighbourPosition)) {
+                    print("found neighbour: " + neighbourPosition + " from " + searchPosition );
                     queue.Enqueue(neighbourPosition);
+                } else {
+                    print("prevented " + neighbourPosition + " from " + searchPosition);
                 }
             }
         }
