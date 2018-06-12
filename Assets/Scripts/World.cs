@@ -20,6 +20,8 @@ public class World : MonoBehaviour {
                 Debug.LogWarning("Skipped loading of overlapping Cell in " + cellPosition);
             } else {
                 grid.Add(cellPosition, cell);
+                Color color = Random.ColorHSV(0f,0f, 0f, 1f, 0f, .25f);
+                cell.SetTopColor(color);
             }
         }
     }
