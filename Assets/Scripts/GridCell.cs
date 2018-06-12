@@ -30,4 +30,8 @@ public class GridCell : MonoBehaviour {
         UpdateGridPosition();
         return gridPosition;
     }
+
+    public void SetTopColor(Color color) {
+        transform.Find("Top").GetComponent<MeshRenderer>().material.color = color;
+    }
 }
