@@ -10,7 +10,6 @@ public class World : MonoBehaviour {
     [SerializeField]
     GridCell endCell;
 
-    Queue<Vector2Int> queue = new Queue<Vector2Int>();
     Vector2Int[] allowedDirections = {
         Vector2Int.up,
         Vector2Int.right,
@@ -51,6 +50,8 @@ public class World : MonoBehaviour {
     }
 
     private void FindPath(Vector2Int startPosition, Vector2Int endPosition) {
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+
         if (! (grid.ContainsKey(startPosition) && grid.ContainsKey(endPosition))) {
             print("Unexistant start or end position");
             return;
