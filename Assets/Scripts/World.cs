@@ -51,7 +51,7 @@ public class World : MonoBehaviour {
 
     private void FindPath(Vector2Int startPosition, Vector2Int endPosition) {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
-        List<Vector2Int> alreadyVisitedPositions = new List<Vector2Int>();
+        Dictionary<Vector2Int, Vector2Int> visitedPositions = new Dictionary<Vector2Int, Vector2Int>();
 
         if (! (grid.ContainsKey(startPosition) && grid.ContainsKey(endPosition))) {
             print("Unexistant start or end position");
@@ -63,15 +63,19 @@ public class World : MonoBehaviour {
             return;
         }
 
+        visitedPositions.Add(startPosition, startPosition);
         queue.Enqueue(startPosition);
-        while (queue.Count > 0) {
+        bool found = false;
+        while (!found && queue.Count > 0) {
             Vector2Int searchPosition = queue.Dequeue();
-            alreadyVisitedPositions.Add(searchPosition);
             foreach (Vector2Int neighbourPosition in ExploreNeighbours(searchPosition)) {
                 if (neighbourPosition == endPosition) {
+                    visitedPositions.Add(endPosition, searchPosition);
                     print("found end: " + endPosition + " from " + searchPosition);
-                    return;
-                } else if (!alreadyVisitedPositions.Contains(neighbourPosition) && !queue.Contains(neighbourPosition)) {
+                    found = true;
+                    break;
+                } else if (!visitedPositions.ContainsKey(neighbourPosition) && !queue.Contains(neighbourPosition)) {
+                    visitedPositions.Add(neighbourPosition, searchPosition);
                     print("found neighbour: " + neighbourPosition + " from " + searchPosition );
                     queue.Enqueue(neighbourPosition);
                 } else {
@@ -79,6 +83,15 @@ public class World : MonoBehaviour {
                 }
             }
         }
+
+        int loopCounter = visitedPositions.Count;
+        Vector2Int v = endPosition;
+        do {
+            v = visitedPositions[v];
+            print("traceback: " + v);
+            loopCounter--;
+        } while (loopCounter > 0 && v != startPosition && visitedPositions.ContainsKey(v));
+
     }
 
     private List<Vector2Int> ExploreNeighbours(GridCell cell) {
