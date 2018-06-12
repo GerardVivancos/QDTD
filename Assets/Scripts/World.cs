@@ -10,6 +10,7 @@ public class World : MonoBehaviour {
     [SerializeField]
     GridCell endCell;
 
+    Queue<Vector2Int> queue = new Queue<Vector2Int>();
     Vector2Int[] allowedDirections = {
         Vector2Int.up,
         Vector2Int.right,
@@ -21,9 +22,8 @@ public class World : MonoBehaviour {
 	void Start () {
         LoadGrid();
         ColorStartEnd();
-        //FindPath(startCell, endCell);
-        ExploreNeighbours(startCell);
-
+        FindPath(startCell, endCell);
+        //ExploreNeighbours(startCell);
     }
 
     private void ColorStartEnd() {
@@ -51,19 +51,45 @@ public class World : MonoBehaviour {
     }
 
     private void FindPath(Vector2Int startPosition, Vector2Int endPosition) {
-        GridCell startCell, endCell;
-        grid.TryGetValue(startPosition,  out startCell);
-        grid.TryGetValue(endPosition, out endCell);
+        if (! (grid.ContainsKey(startPosition) && grid.ContainsKey(endPosition))) {
+            print("Unexistant start or end position");
+            return;
+        }
+
+        if ( startPosition == endPosition) {
+            print("Start and end positions are the same");
+            return;
+        }
+
+        queue.Enqueue(startPosition);
+
+        while (queue.Count > 0) {
+            Vector2Int searchPosition = queue.Dequeue();
+            foreach (Vector2Int neighbourPosition in ExploreNeighbours(searchPosition)) {
+                if (neighbourPosition == endPosition) {
+                    print("found " + endPosition);
+                    return;
+                } else {
+                    queue.Enqueue(neighbourPosition);
+                }
+            }
+        }
     }
 
-    private void ExploreNeighbours(GridCell cell) {
+    private List<Vector2Int> ExploreNeighbours(GridCell cell) {
         Vector2Int currentCellPosition = cell.GetGridPosition();
+        return ExploreNeighbours(currentCellPosition);
+    }
 
+    private List<Vector2Int> ExploreNeighbours(Vector2Int currentCellPosition) {
+        List<Vector2Int> neighbours = new List<Vector2Int>();
         foreach (Vector2Int direction in allowedDirections) {
             Vector2Int neighbourPosition = currentCellPosition + direction;
             if (grid.ContainsKey(neighbourPosition)) {
                 grid[neighbourPosition].SetTopColor(Color.magenta);
+                neighbours.Add(neighbourPosition);
             }
         }
+        return neighbours;
     }
 }
