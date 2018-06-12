@@ -10,11 +10,26 @@ public class World : MonoBehaviour {
     [SerializeField]
     GridCell endCell;
 
+    Vector2Int[] allowedDirections = {
+        Vector2Int.up,
+        Vector2Int.right,
+        Vector2Int.down,
+        Vector2Int.left
+    };
+
 	// Use this for initialization
 	void Start () {
         LoadGrid();
-        FindPath(startCell, endCell);
-	}
+        ColorStartEnd();
+        //FindPath(startCell, endCell);
+        ExploreNeighbours(startCell);
+
+    }
+
+    private void ColorStartEnd() {
+        startCell.SetTopColor(Color.green);
+        endCell.SetTopColor(Color.blue);
+    }
 	
     private void LoadGrid() {
         GridCell[] cells = GetComponentsInChildren<GridCell>();
@@ -39,9 +54,16 @@ public class World : MonoBehaviour {
         GridCell startCell, endCell;
         grid.TryGetValue(startPosition,  out startCell);
         grid.TryGetValue(endPosition, out endCell);
+    }
 
-        startCell.SetTopColor(Color.green);
-        endCell.SetTopColor(Color.blue);
+    private void ExploreNeighbours(GridCell cell) {
+        Vector2Int currentCellPosition = cell.GetGridPosition();
 
+        foreach (Vector2Int direction in allowedDirections) {
+            Vector2Int neighbourPosition = currentCellPosition + direction;
+            if (grid.ContainsKey(neighbourPosition)) {
+                grid[neighbourPosition].SetTopColor(Color.magenta);
+            }
+        }
     }
 }
