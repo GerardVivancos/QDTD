@@ -21,7 +21,8 @@ public class World : MonoBehaviour {
 	void Start () {
         LoadGrid();
         ColorStartEnd();
-        FindPath(startCell, endCell);
+        List<Vector2Int> path = FindPath(startCell, endCell);
+        StartCoroutine("TestPath", path);
         //ExploreNeighbours(startCell);
     }
 
@@ -45,22 +46,22 @@ public class World : MonoBehaviour {
         }
     }
 
-    private void FindPath(GridCell start, GridCell end) {
-        FindPath(start.GetGridPosition(), end.GetGridPosition());
+    private List<Vector2Int> FindPath(GridCell start, GridCell end) {
+        return FindPath(start.GetGridPosition(), end.GetGridPosition());
     }
 
-    private void FindPath(Vector2Int startPosition, Vector2Int endPosition) {
+    private List<Vector2Int> FindPath(Vector2Int startPosition, Vector2Int endPosition) {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         Dictionary<Vector2Int, Vector2Int> visitedPositions = new Dictionary<Vector2Int, Vector2Int>();
 
         if (! (grid.ContainsKey(startPosition) && grid.ContainsKey(endPosition))) {
             print("Unexistant start or end position");
-            return;
+            return null;
         }
 
         if ( startPosition == endPosition) {
             print("Start and end positions are the same");
-            return;
+            return null;
         }
 
         visitedPositions.Add(startPosition, startPosition);
@@ -84,14 +85,23 @@ public class World : MonoBehaviour {
             }
         }
 
-        int loopCounter = visitedPositions.Count;
-        Vector2Int v = endPosition;
-        do {
-            v = visitedPositions[v];
-            print("traceback: " + v);
-            loopCounter--;
-        } while (loopCounter > 0 && v != startPosition && visitedPositions.ContainsKey(v));
+        //int loopCounter = visitedPositions.Count;
 
+        //do {
+        //    v = visitedPositions[v];
+        //    print("traceback: " + v);
+        //    loopCounter--;
+        //} while (loopCounter > 0 && v != startPosition && visitedPositions.ContainsKey(v));
+
+        Vector2Int v = endPosition;
+        List<Vector2Int> path = new List<Vector2Int>();
+        while (visitedPositions[v] != v) {
+            path.Add(v);
+            v = visitedPositions[v];
+        }
+        path.Add(v);
+        path.Reverse();
+        return path;
     }
 
     private List<Vector2Int> ExploreNeighbours(GridCell cell) {
@@ -109,5 +119,14 @@ public class World : MonoBehaviour {
             }
         }
         return neighbours;
+    }
+
+    private IEnumerator TestPath(List<Vector2Int> path) {
+        foreach (Vector2Int v in path) {
+            GridCell c;
+            grid.TryGetValue(v, out c);
+            c.SetTopColor(Color.red);
+            yield return new WaitForSeconds(1f);
+        }
     }
 }
