@@ -5,30 +5,30 @@ using UnityEngine;
 [SelectionBase]
 public class GridCell : MonoBehaviour {
 
-    private const int gridSize = 10;
-    private Vector2Int gridPosition;
+    private const int cellSizeInWorldUnits = 10;
+    private Vector2Int cellPositionInGrid;
 
     public void Awake() {
-        UpdateGridPosition();
+        UpdateCellPositionInGrid();
     }
 
-    private void UpdateGridPosition() {
+    private void UpdateCellPositionInGrid() {
         Vector3 p = transform.position;
-        gridPosition = new Vector2Int(
-            Mathf.RoundToInt(p.x / gridSize),
-            Mathf.RoundToInt(p.z / gridSize)
+        cellPositionInGrid = new Vector2Int(
+            Mathf.RoundToInt(p.x / cellSizeInWorldUnits),
+            Mathf.RoundToInt(p.z / cellSizeInWorldUnits)
             );
         //Also update the GameObject's name
-        gameObject.name = gridPosition.x +","+ gridPosition.y;
+        gameObject.name = cellPositionInGrid.x +","+ cellPositionInGrid.y;
     }
 
-    public int GetGridSize() {
-        return gridSize;
+    public int GetCellSizeInWorldUnits() {
+        return cellSizeInWorldUnits;
     }
 
-    public Vector2Int GetGridPosition() {
-        UpdateGridPosition();
-        return gridPosition;
+    public Vector2Int GetCellPositionInGrid() {
+        UpdateCellPositionInGrid();
+        return cellPositionInGrid;
     }
 
     public void SetTopColor(Color color) {

@@ -17,9 +17,9 @@ public class SnapCubeToGrid : MonoBehaviour {
     }
 
     private void SnapToGrid() {
-        int gridSize = cell.GetGridSize();
+        int gridSize = cell.GetCellSizeInWorldUnits();
         Vector3 p = transform.position;
-        Vector2Int cellPosition = cell.GetGridPosition();
+        Vector2Int cellPosition = cell.GetCellPositionInGrid();
 
         p.x = cellPosition.x * gridSize;
         p.y = 0f;
@@ -29,7 +29,7 @@ public class SnapCubeToGrid : MonoBehaviour {
     }
 
     private void UpdateLabel() {
-        Vector2Int cellPosition = cell.GetGridPosition();
+        Vector2Int cellPosition = cell.GetCellPositionInGrid();
         TextMesh label = GetComponentInChildren<TextMesh>();
         string objectPositionLabel = cellPosition.x + "," + cellPosition.y;
         label.text = objectPositionLabel;

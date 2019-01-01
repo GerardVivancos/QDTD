@@ -17,6 +17,11 @@ public class World : MonoBehaviour {
         Vector2Int.left
     };
 
+    public struct Path {
+        public List<Vector2Int> cells;
+
+    }
+
 	// Use this for initialization
 	void Start () {
         LoadGrid();
@@ -34,7 +39,7 @@ public class World : MonoBehaviour {
     private void LoadGrid() {
         GridCell[] cells = GetComponentsInChildren<GridCell>();
         foreach (GridCell cell in cells) {
-            Vector2Int cellPosition = cell.GetGridPosition();
+            Vector2Int cellPosition = cell.GetCellPositionInGrid();
 
             if (grid.ContainsKey(cellPosition)) {
                 Debug.LogWarning("Skipped loading of overlapping Cell in " + cellPosition);
@@ -46,8 +51,8 @@ public class World : MonoBehaviour {
         }
     }
 
-    private List<Vector2Int> FindPath(GridCell start, GridCell end) {
-        return FindPath(start.GetGridPosition(), end.GetGridPosition());
+    public List<Vector2Int> FindPath(GridCell start, GridCell end) {
+        return FindPath(start.GetCellPositionInGrid(), end.GetCellPositionInGrid());
     }
 
     private List<Vector2Int> FindPath(Vector2Int startPosition, Vector2Int endPosition) {
@@ -85,14 +90,6 @@ public class World : MonoBehaviour {
             }
         }
 
-        //int loopCounter = visitedPositions.Count;
-
-        //do {
-        //    v = visitedPositions[v];
-        //    print("traceback: " + v);
-        //    loopCounter--;
-        //} while (loopCounter > 0 && v != startPosition && visitedPositions.ContainsKey(v));
-
         Vector2Int v = endPosition;
         List<Vector2Int> path = new List<Vector2Int>();
         while (visitedPositions[v] != v) {
@@ -105,7 +102,7 @@ public class World : MonoBehaviour {
     }
 
     private List<Vector2Int> ExploreNeighbours(GridCell cell) {
-        Vector2Int currentCellPosition = cell.GetGridPosition();
+        Vector2Int currentCellPosition = cell.GetCellPositionInGrid();
         return ExploreNeighbours(currentCellPosition);
     }
 
